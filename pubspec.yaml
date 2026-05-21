@@ -1,7 +1,7 @@
 name: docx_tmpl
 description: "A powerful, lightweight Dart and Flutter package that allows you to use Jinja2-style templating directly inside Microsoft Word (.docx) files."
 version: 1.0.0
-homepage: https://github.com/the1coder-pro/
+homepage: https://github.com/the1coder-pro/docx_tmpl
 
 environment:
   sdk: ^3.11.3
