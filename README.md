@@ -111,10 +111,3 @@ To populate a dynamic table, place the `{% for %}` tag in the first cell of the 
 
 ### Conditionals 🛠️🔀
 Conditional blocks can wrap text elements, table rows, or full sections. If the expression evaluates to `false` or `null`, everything enclosed between the `if` and `endif` tags is entirely stripped from the document rendering pipeline without leaving awkward empty vertical spaces. 🪄
-
----
-
-## 📄 License
-
-This project is licensed under the BSD-3 License ⚖️ - see the LICENSE file for details.🛡️
-```
