@@ -390,12 +390,25 @@ class DocxTmpl {
                 dotAll: true,
               );
 
-              for (int index = 0; index < listData.length; index++) {
-                var itemData = listData[index];
+              // 1. Calculate the step (maximum index found in loop content)
+              int step = 1;
+              for (var m in iterVarRegex.allMatches(loopContent)) {
+                String content = m
+                    .group(1)!
+                    .replaceAll(RegExp(r'<[^>]+>|\s'), '');
+                var commaParts = content.split(',');
+                if (commaParts.length == 2) {
+                  int? sVal = int.tryParse(commaParts[1].trim());
+                  if (sVal != null && sVal > step) step = sVal;
+                }
+              }
+
+              for (int index = 0; index < listData.length; index += step) {
                 String currentIterContent = loopContent
                     .replaceAllMapped(indexRegex, (iMatch) {
                       String rawMatch = iMatch.group(0)!;
-                      String strVal = (index + 1).toString();
+                      // Calculate row/iteration number based on step
+                      String strVal = ((index ~/ step) + 1).toString();
                       Iterable<Match> tags = RegExp(
                         r'<[^>]+>',
                       ).allMatches(rawMatch);
@@ -403,19 +416,39 @@ class DocxTmpl {
                     })
                     .replaceAllMapped(iterVarRegex, (vMatch) {
                       String rawMatch = vMatch.group(0)!;
-                      String cleanVar = vMatch
+                      String cleanVarFull = vMatch
                           .group(1)!
                           .replaceAll(RegExp(r'<[^>]+>|\s'), '');
 
+                      String cleanVar = cleanVarFull;
+                      int offset = 1;
+                      var commaParts = cleanVarFull.split(',');
+                      if (commaParts.length == 2) {
+                        cleanVar = commaParts[0].trim();
+                        offset = int.tryParse(commaParts[1].trim()) ?? 1;
+                      }
+
+                      // Fetch item based on current iteration index + requested offset
+                      int dataIndex = index + offset - 1;
+                      var currentItemData = (dataIndex < listData.length)
+                          ? listData[dataIndex]
+                          : null;
+
                       String? strVal;
                       dynamic val;
-                      if (cleanVar.startsWith('$itemName.')) {
-                        String prop = cleanVar.substring(itemName.length + 1);
-                        val = (itemData is Map) ? itemData[prop] : null;
-                        strVal = val?.toString() ?? '';
-                      } else if (cleanVar == itemName) {
-                        val = itemData;
-                        strVal = itemData.toString();
+                      if (currentItemData != null) {
+                        if (cleanVar.startsWith('$itemName.')) {
+                          String prop = cleanVar.substring(itemName.length + 1);
+                          val = (currentItemData is Map)
+                              ? currentItemData[prop]
+                              : null;
+                          strVal = val?.toString() ?? '';
+                        } else if (cleanVar == itemName) {
+                          val = currentItemData;
+                          strVal = currentItemData.toString();
+                        }
+                      } else {
+                        strVal = ''; // Put empty if data is out of bounds
                       }
 
                       if (val is DocxImage) {

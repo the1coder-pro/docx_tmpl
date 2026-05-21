@@ -5,7 +5,7 @@ List<String> templateParse(String text) {
 
   // Extract {{ field }} or {{ field.subfield }} ignoring spaces
   final RegExp re = RegExp(
-    r'\{\{\s*([\w\.]+)\s*\}\}',
+    r'\{\{\s*([\w\.]+)(?:\s*,\s*\d+)?\s*\}\}',
     caseSensitive: true,
     multiLine: true,
   );
