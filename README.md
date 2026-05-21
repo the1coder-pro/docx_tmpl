@@ -115,7 +115,7 @@ Conditional blocks can wrap text elements, table rows, or full sections. If the 
 ---
 ## 📜 Credits & Inspiration
 
-This package brings the powerful, industry-standard paradigm of `.docx` template manipulation into the Dart and Flutter ecosystem. 
+This package brings the powerful, industry-standard paradigm of `.docx` template manipulation into the Dart and Flutter.
 
 * **Inspired by python-docx-template (`docxtpl`):** The conceptual framework, syntax rules, and layout design workflow of `docx_tmpl` are heavily inspired by the brilliant implementation of the popular Python package [docxtpl](https://github.com/elapouya/python-docx-template). It brings that same reliable Jinja2-style developer experience to Dart.
 * **Attribution:** Please see the accompanying [CREDITS.md](CREDITS.md) file for more details about original package's info that was the base that were the start of building this package.  
