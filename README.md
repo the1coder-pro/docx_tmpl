@@ -111,3 +111,11 @@ To populate a dynamic table, place the `{% for %}` tag in the first cell of the 
 
 ### Conditionals 🛠️🔀
 Conditional blocks can wrap text elements, table rows, or full sections. If the expression evaluates to `false` or `null`, everything enclosed between the `if` and `endif` tags is entirely stripped from the document rendering pipeline without leaving awkward empty vertical spaces. 🪄
+
+---
+## 📜 Credits & Inspiration
+
+This package brings the powerful, industry-standard paradigm of `.docx` template manipulation into the Dart and Flutter ecosystem. 
+
+* **Inspired by python-docx-template (`docxtpl`):** The conceptual framework, syntax rules, and layout design workflow of `docx_tmpl` are heavily inspired by the brilliant implementation of the popular Python package [docxtpl](https://github.com/elapouya/python-docx-template). It brings that same reliable Jinja2-style developer experience to Dart.
+* **Attribution:** Please see the accompanying [CREDITS.md](CREDITS.md) file for more details about original package's info that was the base that were the start of building this package.  
