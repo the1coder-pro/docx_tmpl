@@ -181,7 +181,7 @@ class DocxTmpl {
 
   /// Retrieves a list of unique merge fields extracted from the .docx template.
   List<String> getMergeFields() {
-    return mergedFields.toSet().toList();
+    return mergedFields.toSet().toList()..remove('i');
   }
 
   /// Saves the modified document.
@@ -385,43 +385,55 @@ class DocxTmpl {
                 dotAll: true,
               );
 
-              for (var itemData in listData) {
-                String currentIterContent = loopContent.replaceAllMapped(
-                  iterVarRegex,
-                  (vMatch) {
-                    String rawMatch = vMatch.group(0)!;
-                    String cleanVar = vMatch
-                        .group(1)!
-                        .replaceAll(RegExp(r'<[^>]+>|\s'), '');
+              final indexRegex = RegExp(
+                r'\{' + s + r'i' + s + r'\}',
+                dotAll: true,
+              );
 
-                    String? strVal;
-                    dynamic val;
-                    if (cleanVar.startsWith('$itemName.')) {
-                      String prop = cleanVar.substring(itemName.length + 1);
-                      val = (itemData is Map) ? itemData[prop] : null;
-                      strVal = val?.toString() ?? '';
-                    } else if (cleanVar == itemName) {
-                      val = itemData;
-                      strVal = itemData.toString();
-                    }
-
-                    if (val is DocxImage) {
-                      return _processImage(val, partName, rawMatch);
-                    } else if (val is DocxHyperlink) {
-                      return _processHyperlink(val, partName, rawMatch);
-                    } else if (strVal != null) {
-                      strVal = strVal
-                          .replaceAll('&', '&amp;')
-                          .replaceAll('<', '&lt;')
-                          .replaceAll('>', '&gt;');
+              for (int index = 0; index < listData.length; index++) {
+                var itemData = listData[index];
+                String currentIterContent = loopContent
+                    .replaceAllMapped(indexRegex, (iMatch) {
+                      String rawMatch = iMatch.group(0)!;
+                      String strVal = (index + 1).toString();
                       Iterable<Match> tags = RegExp(
                         r'<[^>]+>',
                       ).allMatches(rawMatch);
                       return strVal + tags.map((t) => t.group(0)!).join('');
-                    }
-                    return rawMatch;
-                  },
-                );
+                    })
+                    .replaceAllMapped(iterVarRegex, (vMatch) {
+                      String rawMatch = vMatch.group(0)!;
+                      String cleanVar = vMatch
+                          .group(1)!
+                          .replaceAll(RegExp(r'<[^>]+>|\s'), '');
+
+                      String? strVal;
+                      dynamic val;
+                      if (cleanVar.startsWith('$itemName.')) {
+                        String prop = cleanVar.substring(itemName.length + 1);
+                        val = (itemData is Map) ? itemData[prop] : null;
+                        strVal = val?.toString() ?? '';
+                      } else if (cleanVar == itemName) {
+                        val = itemData;
+                        strVal = itemData.toString();
+                      }
+
+                      if (val is DocxImage) {
+                        return _processImage(val, partName, rawMatch);
+                      } else if (val is DocxHyperlink) {
+                        return _processHyperlink(val, partName, rawMatch);
+                      } else if (strVal != null) {
+                        strVal = strVal
+                            .replaceAll('&', '&amp;')
+                            .replaceAll('<', '&lt;')
+                            .replaceAll('>', '&gt;');
+                        Iterable<Match> tags = RegExp(
+                          r'<[^>]+>',
+                        ).allMatches(rawMatch);
+                        return strVal + tags.map((t) => t.group(0)!).join('');
+                      }
+                      return rawMatch;
+                    });
                 duplicatedContent += currentIterContent;
               }
             }
