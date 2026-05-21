@@ -605,7 +605,7 @@ class DocxTmpl {
   }
 
   /// Parses the DOCX template file entirely in memory.
-  Future<MergeResponse> parseDocxTpl() async {
+  Future<MergeResponse> parseDocxTmpl() async {
     try {
       List<int> bytes;
 
